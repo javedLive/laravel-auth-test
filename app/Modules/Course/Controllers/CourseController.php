@@ -34,8 +34,9 @@ class CourseController extends Controller {
 	 */
 	public function store(Request $request)
 	{
-		 $course = new Course();
+		 	$course = new Course();
             $course->name = $request->Input(['name']);
+            $course->price = $request->Input(['price']);
             $course->save();
 	}
 
@@ -81,6 +82,20 @@ class CourseController extends Controller {
 	public function destroy($id)
 	{
 		//
+	}
+
+	public function searchCourse(Request $request)
+	{
+		   $term = $request->term;
+           $results=array();
+           $queries = \DB::table('courses')
+                ->where('name', 'LIKE', '%'.$term.'%')
+                ->take(5)->get();
+            foreach ($queries as $data)
+            {
+                $results[]=['id'=>$data->id,'value'=>$data->name,'price'=>$data->price];
+            }
+            return response()->json($results);
 	}
 
 }
