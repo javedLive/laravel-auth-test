@@ -51,9 +51,16 @@
 			            <td>Total</td>                     
 			          </tr>
 			        </thead>
-			        <tbody>
+			        <tbody>	        	
 			       	</tbody>
-			      </table>  
+			       	<tfoot>
+                      <tr>                      
+                        <td>Total total</td>
+                        <td colspan="3"></td>
+                        <td class="grandTotal"></td>                     
+                      </tr>
+                    </tfoot>
+			      </table> 
 	    </div>       
 	</body>
 	<script>
@@ -61,19 +68,34 @@
                 source: '{!! asset('nameAutocomplete') !!}',
                 select:function(suggestion,ui){
                     event.preventDefault();
-             //     var $tbody = $('#example tbody').empty();
             //      console.log(ui.item.id);  // For print the id in console
            // 		$('#name').val(ui.item.value); //	For print the name inside input box
-        				var $tbody = $('#example tbody');
+
+       				var $tbody = $('#example tbody');
 				        $tbody.append('<tr><td class="id">' + ui.item.id +
 				        '</td><td class="name">' + ui.item.value +
 				        '</td><td class="price">' + ui.item.price +
-				        '</td><td><input type="text" class="quantity" value="1"/></td><td><input type="text" class="total" readonly value="'+ui.item.price+'" class="readonly"/></td></tr>');
-				        $('.quantity').on('keyup',function(){
-				            var tot = $(this).parent().prev().html() * this.value;
-				           $(this).parent().next().find('.total').val(tot);      
-       					});
+				        '</td><td><input type="number" class="quantity" value="1"/></td><td><input type="text" class="total" readonly value="'+ui.item.price+'" class="readonly"/></td></tr>');
+
+				        $(".grandTotal").text(calculateSum());				
                    }                   
             });
+
+			$('body').on('change', '.quantity', function() {
+			    var tot = $(this).parent().prev().html() * this.value;
+			    $(this).parent().next().find('.total').val(tot);
+			     $(".grandTotal").text(calculateSum());
+			});
+
+				function calculateSum() {
+				    var sum = 0;
+				    $(".total").each(function() {
+				        var value = $(this).val();
+				        if (!isNaN(value) && value.length != 0) {
+				         sum += parseFloat(value);
+				        }
+				    });
+				    return sum;
+				}
     </script>
 </html>
